@@ -36,7 +36,7 @@ export default StyleSheet.create({
     backgroundColor: theme.colors.input,
     borderRadius: theme.radius.md,
     paddingHorizontal: theme.spacing.md,
-    paddingVertical: theme.spacing.sm + 4,
+    paddingVertical: theme.spacing.sm + 2,
     marginVertical: theme.spacing.sm,
   },
   inputText: {

@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client"
 import { hashPassword } from "../Utils/HashPassword.js"
 
+import { v4 as uuid } from "uuid"
 const prisma = new PrismaClient()
 
 const UserController = {
@@ -8,6 +9,7 @@ const UserController = {
     const { name, email, password, role, isOnline } = req.body
 
     const data = {
+      id: uuid(),
       name,
       email,
       password,
@@ -41,11 +43,11 @@ const UserController = {
   },
 
   async getById(req, res) {
-    const { id } = req.params
+    const { id } = req.body
 
     const user = await prisma.user.findUnique({
       where: {
-        id: Number(id),
+        id,
       },
     })
 
@@ -62,7 +64,7 @@ const UserController = {
     try {
       const user = await prisma.user.findUnique({
         where: {
-          id: Number(id),
+          id: String(id),
         },
       })
 
