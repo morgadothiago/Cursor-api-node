@@ -1,5 +1,15 @@
-import { Clock, LogIn, UserPlus, BarChart2, Users, Zap } from "lucide-react"
+import {
+  Clock,
+  LogIn,
+  UserPlus,
+  BarChart2,
+  Users,
+  Zap,
+  LayoutDashboard,
+  LayoutDashboardIcon,
+} from "lucide-react"
 import React from "react"
+import { Link } from "react-router-dom"
 
 export default function LadingPage() {
   return (
@@ -20,83 +30,21 @@ export default function LadingPage() {
         </div>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:block">
-          <ul className="flex items-center gap-12">
-            {["Home", "About", "Contact"].map((item) => (
-              <li
-                key={item}
-                className="text-gray-700 font-medium hover:text-blue-600 transition-colors cursor-pointer hover:scale-105"
-              >
-                {item}
-              </li>
-            ))}
-          </ul>
+        <nav className="flex items-center gap-4">
+          <Link
+            to="/login"
+            className="flex items-center gap-2 bg-white border border-blue-200 text-blue-600 px-4 sm:px-6 py-2 sm:py-3 rounded-xl hover:bg-blue-50 hover:border-blue-300 transition-all duration-300 text-sm sm:text-base group"
+          >
+            <LogIn
+              size={18}
+              className="sm:w-5 sm:h-5 group-hover:scale-110 transition-transform"
+            />
+            <span className="font-medium hidden sm:inline">Entrar</span>
+          </Link>
         </nav>
-
-        {/* Mobile Navigation */}
-        <div className="md:hidden">
-          <button
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-            onClick={() =>
-              document.getElementById("mobile-menu").classList.toggle("hidden")
-            }
-          >
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 6h16M4 12h16M4 18h16"
-              />
-            </svg>
-          </button>
-
-          <div
-            id="mobile-menu"
-            className="hidden absolute top-24 left-0 right-0 bg-white shadow-lg p-4 z-50"
-          >
-            <ul className="space-y-4">
-              {["Home", "About", "Contact"].map((item) => (
-                <li
-                  key={item}
-                  className="text-gray-700 font-medium hover:text-blue-600 transition-colors cursor-pointer p-2 hover:bg-gray-50 rounded"
-                >
-                  {item}
-                </li>
-              ))}
-              <li className="pt-4 border-t">
-                <button className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-blue-500 text-white px-6 py-3 rounded-xl hover:shadow-lg transition-all duration-300 mb-2">
-                  <LogIn size={20} />
-                  <span className="font-medium">Entrar</span>
-                </button>
-                <button className="w-full flex items-center justify-center gap-2 bg-white text-blue-600 px-6 py-3 rounded-xl border-2 border-blue-600 hover:bg-blue-50 transition-all duration-300">
-                  <UserPlus size={20} />
-                  <span className="font-medium">Cadastrar</span>
-                </button>
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        {/* Desktop Buttons */}
-        <div className="hidden md:flex items-center gap-4">
-          <button className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-500 text-white px-6 py-3 rounded-xl hover:translate-y-[-2px] transition-all duration-300 shadow-md hover:shadow-blue-200 hover:shadow-lg">
-            <LogIn size={20} />
-            <span className="font-medium">Entrar</span>
-          </button>
-          <button className="flex items-center gap-2 bg-white text-blue-600 px-6 py-3 rounded-xl border-2 border-blue-600 hover:bg-blue-50 transition-all duration-300 shadow-md hover:shadow-lg hover:translate-y-[-2px]">
-            <UserPlus size={20} />
-            <span className="font-medium">Cadastrar</span>
-          </button>
-        </div>
       </header>
 
-      <main className="container mx-auto px-8 py-24">
+      <main className="container mx-auto px-8 py-24" id="home">
         <div className="text-center max-w-4xl mx-auto">
           <span className="bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-sm font-medium mb-6 inline-block">
             ✨ Revolucione sua gestão de tempo
@@ -111,13 +59,21 @@ export default function LadingPage() {
             Uma plataforma completa e intuitiva para gerenciar seus horários,
             aumentar sua produtividade e alcançar o sucesso profissional
           </p>
-          <div className="flex items-center justify-center gap-6">
-            <button className="bg-gradient-to-r from-blue-600 to-blue-500 text-white text-lg px-8 py-4 rounded-xl hover:translate-y-[-2px] transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-blue-200 font-medium">
-              Começar Gratuitamente
-            </button>
-            <button className="text-gray-700 text-lg px-8 py-4 rounded-xl hover:bg-white/50 transition-all duration-300 font-medium">
-              Ver demonstração →
-            </button>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
+            <Link
+              to="/register"
+              className="group bg-gradient-to-r from-blue-600 to-blue-500 text-white text-lg px-8 py-4 rounded-xl hover:translate-y-[-2px] transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-blue-200 font-medium relative overflow-hidden"
+            >
+              <span className="relative z-10">Começar Gratuitamente</span>
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-700 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            </Link>
+            <Link
+              to="/demo"
+              className="group text-gray-700 text-lg px-8 py-4 rounded-xl hover:bg-white/50 transition-all duration-300 font-medium flex items-center gap-2"
+            >
+              <span>Ver demonstração</span>
+              <span className="group-hover:translate-x-1 transition-transform duration-300">→</span>
+            </Link>
           </div>
         </div>
       </main>
@@ -296,26 +252,13 @@ export default function LadingPage() {
                         Grátis
                       </span>
                     </div>
-                    <div className="flex items-center justify-between p-4 bg-blue-50 rounded-lg">
-                      <span className="font-medium text-gray-900">
-                        Plano Pro
-                      </span>
-                      <span className="text-blue-600 font-semibold">
-                        R$49/mês
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-between p-4 bg-blue-50 rounded-lg">
-                      <span className="font-medium text-gray-900">
-                        Plano Enterprise
-                      </span>
-                      <span className="text-blue-600 font-semibold">
-                        Personalizado
-                      </span>
-                    </div>
                   </div>
-                  <button className="w-full bg-gradient-to-r from-blue-600 to-blue-500 text-white py-4 rounded-xl font-medium hover:shadow-lg hover:translate-y-[-2px] transition-all duration-300">
+                  <Link
+                    to="/signup"
+                    className="block w-full bg-gradient-to-r from-blue-600 to-blue-500 text-white py-4 rounded-xl font-medium hover:shadow-lg hover:translate-y-[-2px] transition-all duration-300 text-center"
+                  >
                     Começar Gratuitamente
-                  </button>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -404,8 +347,17 @@ export default function LadingPage() {
               </button>
 
               <p className="text-sm text-gray-500 text-center">
-                Ao enviar, você concorda com nossos Termos de Serviço e Política
-                de Privacidade
+                Ao enviar, você concorda com nossos{" "}
+                <Link to="/terms" className="text-blue-600 hover:text-blue-700">
+                  Termos de Serviço
+                </Link>{" "}
+                e{" "}
+                <Link
+                  to="/privacy"
+                  className="text-blue-600 hover:text-blue-700"
+                >
+                  Política de Privacidade
+                </Link>
               </p>
             </form>
           </div>
@@ -431,112 +383,6 @@ export default function LadingPage() {
                 Sua plataforma completa para gestão de tempo e produtividade.
               </p>
             </div>
-
-            <div className="col-span-1">
-              <h3 className="text-lg font-semibold mb-4">Produto</h3>
-              <ul className="space-y-3">
-                <li>
-                  <a
-                    href="#"
-                    className="text-gray-400 hover:text-white transition-colors"
-                  >
-                    Recursos
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-gray-400 hover:text-white transition-colors"
-                  >
-                    Preços
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-gray-400 hover:text-white transition-colors"
-                  >
-                    Integrações
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-gray-400 hover:text-white transition-colors"
-                  >
-                    API
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            <div className="col-span-1">
-              <h3 className="text-lg font-semibold mb-4">Empresa</h3>
-              <ul className="space-y-3">
-                <li>
-                  <a
-                    href="#"
-                    className="text-gray-400 hover:text-white transition-colors"
-                  >
-                    Sobre nós
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-gray-400 hover:text-white transition-colors"
-                  >
-                    Blog
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-gray-400 hover:text-white transition-colors"
-                  >
-                    Carreiras
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-gray-400 hover:text-white transition-colors"
-                  >
-                    Contato
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            <div className="col-span-1">
-              <h3 className="text-lg font-semibold mb-4">Legal</h3>
-              <ul className="space-y-3">
-                <li>
-                  <a
-                    href="#"
-                    className="text-gray-400 hover:text-white transition-colors"
-                  >
-                    Privacidade
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-gray-400 hover:text-white transition-colors"
-                  >
-                    Termos
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-gray-400 hover:text-white transition-colors"
-                  >
-                    Segurança
-                  </a>
-                </li>
-              </ul>
-            </div>
           </div>
 
           <div className="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
@@ -544,8 +390,8 @@ export default function LadingPage() {
               © 2024 Pointfy. Todos os direitos reservados.
             </p>
             <div className="flex gap-6 mt-4 md:mt-0">
-              <a
-                href="#"
+              <Link
+                to="/twitter"
                 className="text-gray-400 hover:text-white transition-colors"
               >
                 <svg
@@ -556,9 +402,9 @@ export default function LadingPage() {
                 >
                   <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84"></path>
                 </svg>
-              </a>
-              <a
-                href="#"
+              </Link>
+              <Link
+                to="/github"
                 className="text-gray-400 hover:text-white transition-colors"
               >
                 <svg
@@ -573,9 +419,9 @@ export default function LadingPage() {
                     clipRule="evenodd"
                   ></path>
                 </svg>
-              </a>
-              <a
-                href="#"
+              </Link>
+              <Link
+                to="/dribbble"
                 className="text-gray-400 hover:text-white transition-colors"
               >
                 <svg
@@ -590,7 +436,7 @@ export default function LadingPage() {
                     clipRule="evenodd"
                   ></path>
                 </svg>
-              </a>
+              </Link>
             </div>
           </div>
         </div>
