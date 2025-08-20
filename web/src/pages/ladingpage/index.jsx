@@ -30,7 +30,7 @@ export default function LadingPage() {
         </div>
 
         {/* Desktop Navigation */}
-        <nav className="flex items-center gap-4">
+        <nav className="flex items-center gap-4" role="navigation" aria-label="Navegação principal">
           <Link
             to="/login"
             className="flex items-center gap-2 bg-white border border-blue-200 text-blue-600 px-4 sm:px-6 py-2 sm:py-3 rounded-xl hover:bg-blue-50 hover:border-blue-300 transition-all duration-300 text-sm sm:text-base group"
@@ -46,53 +46,55 @@ export default function LadingPage() {
 
       <main className="container mx-auto px-8 py-24" id="home">
         <div className="text-center max-w-4xl mx-auto">
-          <span className="bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-sm font-medium mb-6 inline-block">
+          <span className="bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-sm font-medium mb-6 inline-block animate-fade-in-up">
             ✨ Revolucione sua gestão de tempo
           </span>
-          <h2 className="text-5xl font-bold text-gray-900 mb-6 leading-tight">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-6 leading-tight animate-fade-in-up" style={{ animationDelay: '200ms' }}>
             Simplifique o controle do seu tempo e{" "}
             <span className="bg-gradient-to-r from-blue-600 to-blue-800 text-transparent bg-clip-text">
               maximize seus resultados
             </span>
           </h2>
-          <p className="text-xl text-gray-600 mb-12 leading-relaxed">
+          <p className="text-lg sm:text-xl text-gray-600 mb-8 sm:mb-12 leading-relaxed animate-fade-in-up px-4 sm:px-0" style={{ animationDelay: '400ms' }}>
             Uma plataforma completa e intuitiva para gerenciar seus horários,
             aumentar sua produtividade e alcançar o sucesso profissional
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 animate-fade-in-up" style={{ animationDelay: '600ms' }}>
             <Link
               to="/register"
-              className="group bg-gradient-to-r from-blue-600 to-blue-500 text-white text-lg px-8 py-4 rounded-xl hover:translate-y-[-2px] transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-blue-200 font-medium relative overflow-hidden"
+              className="group bg-gradient-to-r from-blue-600 to-blue-500 text-white text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 rounded-xl hover:translate-y-[-2px] transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-blue-200 font-medium relative overflow-hidden w-full sm:w-auto text-center focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              aria-label="Criar conta gratuita"
             >
               <span className="relative z-10">Começar Gratuitamente</span>
               <div className="absolute inset-0 bg-gradient-to-r from-blue-700 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             </Link>
             <Link
               to="/demo"
-              className="group text-gray-700 text-lg px-8 py-4 rounded-xl hover:bg-white/50 transition-all duration-300 font-medium flex items-center gap-2"
+              className="group text-gray-700 text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 rounded-xl hover:bg-white/50 transition-all duration-300 font-medium flex items-center justify-center gap-2 w-full sm:w-auto focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+              aria-label="Ver demonstração do produto"
             >
               <span>Ver demonstração</span>
-              <span className="group-hover:translate-x-1 transition-transform duration-300">→</span>
+              <span className="group-hover:translate-x-1 transition-transform duration-300" aria-hidden="true">→</span>
             </Link>
           </div>
         </div>
       </main>
 
-      <section className="bg-white py-24">
-        <div className="container mx-auto px-8">
-          <div className="text-center max-w-3xl mx-auto mb-16">
+      <section className="bg-white py-16 sm:py-24">
+        <div className="container mx-auto px-4 sm:px-8">
+          <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
             <span className="bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-sm font-medium mb-6 inline-block">
               Recursos poderosos
             </span>
-            <h2 className="text-4xl font-bold text-gray-900 mb-6">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
               Tudo que você precisa em um só lugar
             </h2>
-            <p className="text-xl text-gray-600">
+            <p className="text-lg sm:text-xl text-gray-600 px-4 sm:px-0">
               Ferramentas inteligentes para otimizar sua gestão de tempo
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {[
               {
                 icon: <Clock size={28} />,
@@ -115,7 +117,8 @@ export default function LadingPage() {
             ].map((feature, index) => (
               <div
                 key={index}
-                className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:translate-y-[-4px] border border-gray-100"
+                className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:translate-y-[-4px] border border-gray-100 animate-fade-in-up"
+                style={{ animationDelay: `${index * 150}ms` }}
               >
                 <div className="bg-gradient-to-r from-blue-600 to-blue-500 p-4 rounded-xl mb-6 w-fit">
                   <div className="text-white">{feature.icon}</div>

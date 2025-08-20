@@ -10,6 +10,12 @@ import {
   CardHeader,
   CardTitle,
 } from "../../components/ui/Card"
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "../../components/ui/tabs"
 
 export default function Register() {
   const [showPassword, setShowPassword] = useState(false)
@@ -22,6 +28,7 @@ export default function Register() {
   })
   const [errors, setErrors] = useState({})
   const [isLoading, setIsLoading] = useState(false)
+  const [tab, setTab] = useState("account")
 
   const handleInputChange = (e) => {
     const { name, value } = e.target
