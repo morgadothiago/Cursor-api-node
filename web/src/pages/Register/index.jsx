@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { Clock, Mail, Lock, Eye, EyeOff, User } from "lucide-react"
 import { Button } from "../../components/ui/Button"
@@ -10,80 +10,72 @@ import {
   CardHeader,
   CardTitle,
 } from "../../components/ui/Card"
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "../../components/ui/tabs"
+import { api } from "@/services/api"
+import { useForm } from "react-hook-form"
+import { toast } from "sonner"
+import { yupResolver } from "@hookform/resolvers/yup"
+import { registerSchema } from "@/schema/schemas"
 
 export default function Register() {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm({
+    resolver: yupResolver(registerSchema),
+    mode: "onBlur",
   })
-  const [errors, setErrors] = useState({})
+
   const [isLoading, setIsLoading] = useState(false)
-  const [tab, setTab] = useState("account")
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
-    // Limpar erro quando o usuário começar a digitar
-    if (errors[name]) {
-      setErrors((prev) => ({ ...prev, [name]: "" }))
+  useEffect(() => {
+    function fetchData() {
+      const response = api.get("/accounts")
+      response.then((response) => {
+        console.log(response.data)
+      })
     }
-  }
+    fetchData()
+  }, [])
 
-  const validateForm = () => {
-    const newErrors = {}
-
-    if (!formData.name) {
-      newErrors.name = "Nome é obrigatório"
-    } else if (formData.name.length < 2) {
-      newErrors.name = "Nome deve ter pelo menos 2 caracteres"
-    }
-
-    if (!formData.email) {
-      newErrors.email = "Email é obrigatório"
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Email inválido"
-    }
-
-    if (!formData.password) {
-      newErrors.password = "Senha é obrigatória"
-    } else if (formData.password.length < 6) {
-      newErrors.password = "Senha deve ter pelo menos 6 caracteres"
-    }
-
-    if (!formData.confirmPassword) {
-      newErrors.confirmPassword = "Confirmação de senha é obrigatória"
-    } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = "Senhas não coincidem"
-    }
-
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
-  }
-
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-
-    if (!validateForm()) return
-
+  const onSubmit = async (data) => {
     setIsLoading(true)
 
     try {
-      // Simular chamada de API
-      await new Promise((resolve) => setTimeout(resolve, 1500))
-      console.log("Registro realizado:", formData)
-      // Aqui você faria a chamada real para a API
+      await api.post("/accounts", data)
+      toast.success("Conta criada com sucesso!", {
+        duration: 5000,
+        position: "top-center",
+        style: {
+          background: "#10B981",
+          color: "#fff",
+          border: "none",
+          fontSize: "14px",
+          padding: "12px 20px",
+          borderRadius: "8px",
+          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+        },
+      })
+      reset()
     } catch (error) {
-      console.error("Erro no registro:", error)
+      const errorMessage =
+        error.response?.data?.message || "Erro ao criar conta. Tente novamente."
+      toast.error(errorMessage, {
+        duration: 5000,
+        position: "top-center",
+        style: {
+          background: "#EF4444",
+          color: "#fff",
+          border: "none",
+          fontSize: "14px",
+          padding: "12px 20px",
+          borderRadius: "8px",
+          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+        },
+      })
     } finally {
       setIsLoading(false)
     }
@@ -118,76 +110,90 @@ export default function Register() {
               Preencha os dados abaixo para começar
             </CardDescription>
           </CardHeader>
-          <CardContent className="pb-6">
-            <form onSubmit={handleSubmit} className="space-y-5">
-              <div className="space-y-2">
-                <Input
-                  type="text"
-                  name="name"
-                  placeholder="Nome completo"
-                  icon={<User size={20} />}
-                  value={formData.name}
-                  onChange={handleInputChange}
-                  error={errors.name}
-                />
-                <Input
-                  type="email"
-                  name="email"
-                  placeholder="Email"
-                  icon={<Mail size={20} />}
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  error={errors.email}
-                />
+          <CardContent className="pb-8 px-6">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+              <div className="space-y-4">
+                <div className="space-y-1">
+                  <Input
+                    type="text"
+                    name="name"
+                    placeholder="Nome completo"
+                    icon={User}
+                    {...register("name")}
+                  />
+                  {errors.name && (
+                    <p className="text-red-500 text-sm">
+                      {errors.name?.message}
+                    </p>
+                  )}
+                </div>
+                <div className="space-y-1">
+                  <Input
+                    type="email"
+                    name="email"
+                    placeholder="Email"
+                    icon={Mail}
+                    {...register("email")}
+                  />
+                  {errors.email && (
+                    <p className="text-red-500 text-sm">
+                      {errors.email.message}
+                    </p>
+                  )}
+                </div>
+                <div className="space-y-1">
+                  <div className="relative">
+                    <Input
+                      type={showPassword ? "text" : "password"}
+                      name="password"
+                      placeholder="Senha"
+                      icon={Lock}
+                      {...register("password")}
+                    />
+                    <button
+                      type="button"
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                    </button>
+                  </div>
+                  {errors.password && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.password.message}
+                    </p>
+                  )}
+                </div>
 
-                <Input
-                  type={showPassword ? "text" : "password"}
-                  name="password"
-                  placeholder="Senha"
-                  icon={<Lock size={20} />}
-                  rightIcon={
-                    showPassword ? (
-                      <EyeOff
-                        size={20}
-                        className="cursor-pointer"
-                        onClick={() => setShowPassword(false)}
-                      />
-                    ) : (
-                      <Eye
-                        size={20}
-                        className="cursor-pointer"
-                        onClick={() => setShowPassword(true)}
-                      />
-                    )
-                  }
-                  value={formData.password}
-                  onChange={handleInputChange}
-                  error={errors.password}
-                />
-                <Input
-                  type={showConfirmPassword ? "text" : "password"}
-                  name="confirmPassword"
-                  placeholder="Confirmar senha"
-                  icon={<Lock size={20} />}
-                  rightIcon={
-                    showConfirmPassword ? (
-                      <EyeOff
-                        size={20}
-                        className="cursor-pointer"
-                        onClick={() => setShowConfirmPassword(false)}
-                      />
-                    ) : (
-                      <Eye
-                        size={20}
-                        className="cursor-pointer"
-                        onClick={() => setShowConfirmPassword(true)}
-                      />
-                    )
-                  }
-                  value={formData.confirmPassword}
-                  onChange={handleInputChange}
-                  error={errors.confirmPassword}
-                />
+                <div className="space-y-1">
+                  <div className="relative">
+                    <Input
+                      type={showConfirmPassword ? "text" : "password"}
+                      name="confirmPassword"
+                      placeholder="Confirmar senha"
+                      icon={Lock}
+                      {...register("confirmPassword")}
+                    />
+                    <button
+                      type="button"
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                      onClick={() =>
+                        setShowConfirmPassword(!showConfirmPassword)
+                      }
+                    >
+                      {showConfirmPassword ? (
+                        <EyeOff size={20} />
+                      ) : (
+                        <Eye size={20} />
+                      )}
+                    </button>
+                  </div>
+                  {errors.confirmPassword && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.confirmPassword.message}
+                    </p>
+                  )}
+                </div>
               </div>
               <Button type="submit" className="w-full" loading={isLoading}>
                 Criar conta

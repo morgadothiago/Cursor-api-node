@@ -1,214 +1,179 @@
 import React, { useState } from "react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { Clock, Mail, Lock, Eye, EyeOff } from "lucide-react"
-import { Button } from "../../components/ui/Button"
-import { Input } from "../../components/ui/Input"
+import { Button } from "@/components/ui/Button"
+import { Input } from "@/components/ui/Input"
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../../components/ui/Card"
+} from "@/components/ui/Card"
+import { api } from "@/services/api"
+import { useForm } from "react-hook-form"
+import { toast } from "sonner"
+import { yupResolver } from "@hookform/resolvers/yup"
+import { loginSchema } from "@/schema/schemas"
 
 export default function SignIn() {
   const [showPassword, setShowPassword] = useState(false)
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
+  const navigate = useNavigate()
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(loginSchema),
+    mode: "onBlur",
   })
-  const [errors, setErrors] = useState({})
+
   const [isLoading, setIsLoading] = useState(false)
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
-    // Limpar erro quando o usuário começar a digitar
-    if (errors[name]) {
-      setErrors((prev) => ({ ...prev, [name]: "" }))
-    }
-  }
-
-  const validateForm = () => {
-    const newErrors = {}
-
-    if (!formData.email) {
-      newErrors.email = "Email é obrigatório"
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Email inválido"
-    }
-
-    if (!formData.password) {
-      newErrors.password = "Senha é obrigatória"
-    } else if (formData.password.length < 6) {
-      newErrors.password = "Senha deve ter pelo menos 6 caracteres"
-    }
-
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
-  }
-
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-
-    if (!validateForm()) return
-
+  const onSubmit = async (data) => {
     setIsLoading(true)
 
     try {
-      // Simular chamada de API
-      await new Promise((resolve) => setTimeout(resolve, 1500))
-      console.log("Login realizado:", formData)
-      // Aqui você faria a chamada real para a API
+      const response = await api.post("/sessions", data)
+
+      // Save token and user data
+      localStorage.setItem("@pointfy:token", response.data.token)
+      localStorage.setItem("@pointfy:user", JSON.stringify(response.data.user))
+
+      toast.success("Login realizado com sucesso!", {
+        duration: 3000,
+        position: "top-center",
+        style: {
+          background: "#10B981",
+          color: "#fff",
+          border: "none",
+          fontSize: "14px",
+          padding: "12px 20px",
+          borderRadius: "8px",
+          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+        },
+        onAutoClose: () => {
+          navigate("/dashboard")
+        },
+      })
     } catch (error) {
-      console.error("Erro no login:", error)
+      const errorMessage =
+        error.response?.data?.message ||
+        "Erro ao fazer login. Verifique suas credenciais e tente novamente."
+
+      toast.error(errorMessage, {
+        duration: 5000,
+        position: "top-center",
+        style: {
+          background: "#EF4444",
+          color: "#fff",
+          border: "none",
+          fontSize: "14px",
+          padding: "12px 20px",
+          borderRadius: "8px",
+          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+        },
+      })
     } finally {
       setIsLoading(false)
     }
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        {/* Logo e Header */}
-        <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center gap-3 mb-6 group">
-            <div className="bg-gradient-to-r from-indigo-600 to-blue-500 p-3 rounded-2xl shadow-lg group-hover:scale-105 transition-all duration-300">
-              <Clock size={32} className="text-white" />
-            </div>
-            <div className="text-left">
-              <h1 className="text-3xl font-extrabold bg-gradient-to-r from-blue-600 to-blue-800 text-transparent bg-clip-text">
-                Pointfy
-              </h1>
-              <p className="text-sm font-medium text-gray-600">
-                Gerencie seu tempo e seus ganhos
-              </p>
-            </div>
-          </Link>
+    <div className="min-h-screen bg-gradient-to-br from-blue-600 to-blue-800 flex flex-col md:flex-row items-center justify-center p-4">
+      {/* Left Side - Branding */}
+      <div className="w-full md:w-1/2 text-center md:text-left mb-8 md:mb-0 px-4 md:px-12">
+        <div className="inline-flex items-center gap-3 mb-6 justify-center md:justify-start">
+          <div className="bg-white/20 p-3 rounded-2xl shadow-lg backdrop-blur-sm">
+            <Clock size={32} className="text-white" />
+          </div>
+          <h1 className="text-4xl font-extrabold text-white">Pointfy</h1>
         </div>
+        <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
+          Bem-vindo de volta!
+        </h2>
+        <p className="text-blue-100 text-lg max-w-md mx-auto md:mx-0">
+          Acesse sua conta para gerenciar seu tempo e produtividade.
+        </p>
+      </div>
 
-        {/* Card de Login */}
-        <Card className="backdrop-blur-sm bg-white/80 border-white/20">
-          <CardHeader className="text-center">
+      {/* Right Side - Form */}
+      <div className="w-full md:w-1/2 flex justify-center px-4">
+        <Card className="w-full max-w-md bg-white/95 backdrop-blur-sm shadow-lg">
+          <CardHeader className="text-center pt-8 pb-6">
             <CardTitle className="text-2xl font-bold text-gray-900">
-              Bem-vindo de volta
+              Entrar na conta
             </CardTitle>
             <CardDescription className="text-gray-600">
-              Entre na sua conta para continuar
+              Digite suas credenciais para acessar
             </CardDescription>
           </CardHeader>
-
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Campo Email */}
-              <div className="space-y-2">
-                <label
-                  htmlFor="email"
-                  className="text-sm font-medium text-gray-700"
-                >
-                  Email
-                </label>
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  placeholder="seu@email.com"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  error={errors.email}
-                  icon={Mail}
-                  className="transition-all duration-200"
-                />
-              </div>
-
-              {/* Campo Senha */}
-              <div className="space-y-2">
-                <label
-                  htmlFor="password"
-                  className="text-sm font-medium text-gray-700"
-                >
-                  Senha
-                </label>
-                <div className="relative">
+          <CardContent className="pb-8 px-6">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+              <div className="space-y-4">
+                <div className="space-y-1">
                   <Input
-                    id="password"
-                    name="password"
-                    type={showPassword ? "text" : "password"}
-                    placeholder="Digite sua senha"
-                    value={formData.password}
-                    onChange={handleInputChange}
-                    error={errors.password}
-                    icon={Lock}
-                    className="pr-12"
+                    type="email"
+                    name="email"
+                    placeholder="Email"
+                    icon={Mail}
+                    {...register("email")}
                   />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                  {errors.email && (
+                    <p className="text-red-500 text-sm">
+                      {errors.email.message}
+                    </p>
+                  )}
+                </div>
+
+                <div className="space-y-1">
+                  <div className="relative">
+                    <Input
+                      type={showPassword ? "text" : "password"}
+                      name="password"
+                      placeholder="Senha"
+                      icon={Lock}
+                      {...register("password")}
+                    />
+                    <button
+                      type="button"
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                    </button>
+                  </div>
+                  {errors.password && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.password.message}
+                    </p>
+                  )}
+                </div>
+
+                <div className="flex items-center justify-end">
+                  <Link
+                    to="/forgot-password"
+                    className="text-sm text-primary hover:underline"
                   >
-                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                  </button>
+                    Esqueceu sua senha?
+                  </Link>
                 </div>
               </div>
 
-              {/* Link Esqueci a senha */}
-              <div className="text-right">
-                <Link
-                  to="/forgot-password"
-                  className="text-sm text-blue-600 hover:text-blue-800 transition-colors"
-                >
-                  Esqueceu sua senha?
-                </Link>
-              </div>
-
-              {/* Botão de Login */}
-              <Button
-                type="submit"
-                className="w-full h-12 text-base font-semibold"
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                    Entrando...
-                  </div>
-                ) : (
-                  "Entrar"
-                )}
+              <Button type="submit" className="w-full" loading={isLoading}>
+                Entrar
               </Button>
-            </form>
 
-            {/* Divisor */}
-            <div className="relative my-6">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-200"></div>
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-4 bg-white text-gray-500">ou</span>
-              </div>
-            </div>
-
-            {/* Link para Registro */}
-            <div className="text-center">
-              <p className="text-sm text-gray-600">
+              <p className="text-center text-sm text-gray-600">
                 Não tem uma conta?{" "}
-                <Link
-                  to="/register"
-                  className="font-semibold text-blue-600 hover:text-blue-800 transition-colors"
-                >
-                  Criar conta
+                <Link to="/register" className="text-primary hover:underline">
+                  Cadastre-se
                 </Link>
               </p>
-            </div>
+            </form>
           </CardContent>
         </Card>
-
-        {/* Footer */}
-        <div className="text-center mt-8">
-          <p className="text-sm text-gray-500">
-            © 2024 Pointfy. Todos os direitos reservados.
-          </p>
-        </div>
       </div>
     </div>
   )
