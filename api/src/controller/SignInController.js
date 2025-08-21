@@ -1,9 +1,7 @@
 import { PrismaClient } from "@prisma/client"
 import { comparePassword } from "../Utils/HashPassword.js"
-import jwt from "jsonwebtoken"
 import { generateToken } from "../Utils/Jwt.js"
-
-const JWT_SECRET = process.env.JWT_SECRET
+import UserController from "./UserController.js"
 
 const prisma = new PrismaClient()
 
@@ -35,13 +33,41 @@ export const SignInController = {
         })
       }
 
-      // Aqui vamos gerar o token jwt
-
+      // Gerar o token JWT
       const token = generateToken({ id: user.id })
 
-      res.status(200).json(token)
+      // Atualizar o status do usuário para online
+      const updatedUser = await UserController.setUserOnline(user.id)
+
+      res.status(200).json({
+        token,
+        user: updatedUser,
+      })
     } catch (error) {
       console.log(error)
     }
   },
+
+  async signOut(req, res) {
+    try {
+      const userId = req.userId // Obtido do middleware de autenticação
+      
+      // Atualizar o status do usuário para offline
+      await UserController.setUserOffline(userId)
+      
+      // Aqui você pode adicionar lógica adicional de logout, como invalidar o token
+      
+      return res.status(200).json({
+        success: true,
+        message: 'Logout realizado com sucesso'
+      })
+    } catch (error) {
+      console.error('Error during logout:', error)
+      return res.status(500).json({
+        success: false,
+        message: 'Erro ao realizar logout',
+        error: error.message
+      })
+    }
+  }
 }

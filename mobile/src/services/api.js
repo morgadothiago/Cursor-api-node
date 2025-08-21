@@ -1,14 +1,16 @@
 import axios from "axios"
 
 export const api = axios.create({
-  baseURL: "http://192.168.100.98:3333",
+  baseURL: "http://192.168.100.96:3333",
+  timeout: 10000,
 })
 
 async function signIn(email, password) {
   try {
-    const response = await api.post("/auth", { email, password })
+    const response = await api.post("/signin", { email, password })
     return response.data
   } catch (error) {
+    console.log(error)
     throw error
   }
 }

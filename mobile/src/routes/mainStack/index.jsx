@@ -1,17 +1,25 @@
-import { createNativeStackNavigator } from "@react-navigation/native-stack"
-
-import Signin from "../../Screens/Signin"
-import SignUp from "../../Screens/SignUp"
-import Home from "../../Screens/Home"
-
-const Stack = createNativeStackNavigator()
+import { useContext, useEffect, useState } from "react"
+import { AuthContext } from "../../contexts/AuthContext"
+import Loading from "../../components/Loading"
+import AppStack from "../stacks/AppStack"
+import AuthStack from "../stacks/AuthStack"
 
 export default function MainStack() {
-  return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Signin" component={Signin} />
-      <Stack.Screen name="Home" component={Home} />
-      <Stack.Screen name="SignUp" component={SignUp} />
-    </Stack.Navigator>
-  )
+  const { userToken, loading } = useContext(AuthContext)
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    // Pequeno delay para evitar piscar a tela de loading
+    const timer = setTimeout(() => {
+      setIsLoading(false)
+    }, 500)
+
+    return () => clearTimeout(timer)
+  }, [])
+
+  if (loading || isLoading) {
+    return <Loading />
+  }
+
+  return userToken ? <AppStack /> : <AuthStack />
 }

@@ -91,24 +91,92 @@ const UserController = {
   async delete(req, res) {
     const { id } = req.params
 
-    const user = await prisma.user.findUnique({
+    const userExist = await prisma.user.findUnique({
       where: {
-        id: Number(id),
+        id,
       },
     })
 
-    if (!user) {
-      return res.status(404).json({ message: "User not found" })
+    if (!userExist) {
+      return res.status(400).json({ message: "User not found" })
     }
 
     await prisma.user.delete({
       where: {
-        id: Number(id),
+        id,
       },
     })
 
-    return res.status(200).json({ message: "User deleted" })
+    return res.status(200).json({ message: "User deleted successfully" })
   },
+
+  async setOnlineStatus(req, res) {
+    const { id } = req.params
+    const { isOnline } = req.body
+
+    try {
+      const user = await prisma.user.update({
+        where: { id },
+        data: { isOnline },
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          role: true,
+          isOnline: true
+        }
+      })
+
+      return res.status(200).json({
+        message: `User is now ${isOnline ? 'online' : 'offline'}`,
+        user
+      })
+    } catch (error) {
+      console.error('Error updating online status:', error)
+      return res.status(500).json({ 
+        message: 'Error updating online status',
+        error: error.message 
+      })
+    }
+  },
+
+  async setUserOnline(userId) {
+    try {
+      return await prisma.user.update({
+        where: { id: userId },
+        data: { isOnline: true },
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          role: true,
+          isOnline: true
+        }
+      })
+    } catch (error) {
+      console.error('Error setting user online:', error)
+      throw error
+    }
+  },
+
+  async setUserOffline(userId) {
+    try {
+      return await prisma.user.update({
+        where: { id: userId },
+        data: { isOnline: false },
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          role: true,
+          isOnline: true
+        }
+      })
+    } catch (error) {
+      console.error('Error setting user offline:', error)
+      throw error
+    }
+  }
 }
 
 export default UserController

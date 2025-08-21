@@ -58,6 +58,9 @@ export default StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
   },
+  buttonDisabled: {
+    backgroundColor: theme.colors.primary + '80', // Add opacity to the primary color
+  },
 
   /** Footer */
   footer: {

@@ -1,34 +1,53 @@
-import { Text, TouchableOpacity, View, Alert } from "react-native"
-import { useState } from "react"
+import { Text, TouchableOpacity, View, Alert, ActivityIndicator } from "react-native"
+import { useState, useContext } from "react"
 import { useNavigation } from "@react-navigation/native"
 import { useForm } from "react-hook-form"
 import Input from "../../components/Input"
 import styles from "./styles"
 import { Feather } from "@expo/vector-icons"
-import { login } from "../../services/api" // sua função de login
+import { AuthContext } from "../../contexts/AuthContext"
+import { signIn as apiSignIn } from "../../services/api"
 
 export default function Signin() {
   const navigation = useNavigation()
   const { control, handleSubmit } = useForm()
+  const { signIn } = useContext(AuthContext)
+  const [isLoading, setIsLoading] = useState(false)
 
   const handleSignIn = async (data) => {
     const { email, password } = data
-
+    
     if (!email || !password) {
       Alert.alert("Erro", "Preencha todos os campos")
       return
     }
 
+    setIsLoading(true)
     try {
-      const response = await login(email, password) // chamar API
-      const message = response.data?.message || "Login realizado com sucesso!"
-      Alert.alert("Sucesso", message)
-      // aqui você pode salvar token e navegar
-      console.log("Usuário logado:", response.data)
+      const response = await apiSignIn(email, password)
+      if (response.token) {
+        // Extrair os dados do usuário da resposta da API
+        const userData = {
+          email: response.user?.email || email,
+          name: response.user?.name || 'Usuário',
+          id: response.user?.id,
+          // Adicione outros campos do usuário que você receber da API
+          ...response.user
+        }
+        
+        await signIn(response.token, userData)
+        // Navegar para a tela principal após o login
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'Home' }],
+        })
+      }
     } catch (error) {
       const message =
         error.response?.data?.message || "Não foi possível realizar o login"
       Alert.alert("Erro", message)
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -50,6 +69,7 @@ export default function Signin() {
             name="email"
             iconName="user"
             placeholder="Email"
+            autoCapitalize="none"
             rules={{
               required: "Email é obrigatório",
               pattern: { value: /\S+@\S+\.\S+/, message: "Email inválido" },
@@ -74,11 +94,16 @@ export default function Signin() {
 
           {/* Botão */}
           <TouchableOpacity
-            style={styles.button}
+            style={[styles.button, isLoading && styles.buttonDisabled]}
             activeOpacity={0.7}
             onPress={handleSubmit(handleSignIn)}
+            disabled={isLoading}
           >
-            <Text style={styles.buttonText}>Entrar</Text>
+            {isLoading ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text style={styles.buttonText}>Entrar</Text>
+            )}
           </TouchableOpacity>
         </View>
       </View>
