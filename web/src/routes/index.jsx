@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 import SignIn from "../pages/Sigin"
 import Register from "../pages/Register"
 import LadingPage from "../pages/ladingpage"
+import Dashboard from "../pages/dashboard"
 
 const AppRoutes = () => {
   return (
@@ -12,6 +13,7 @@ const AppRoutes = () => {
 
         <Route path="/register" element={<Register />} />
         <Route path="*" element={<Navigate to="/" />} />
+        <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
     </BrowserRouter>
   )

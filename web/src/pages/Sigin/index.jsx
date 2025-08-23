@@ -35,7 +35,7 @@ export default function SignIn() {
     setIsLoading(true)
 
     try {
-      const response = await api.post("/sessions", data)
+      const response = await api.post("/signin", data)
 
       // Save token and user data
       localStorage.setItem("@pointfy:token", response.data.token)
@@ -53,10 +53,11 @@ export default function SignIn() {
           borderRadius: "8px",
           boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
         },
-        onAutoClose: () => {
-          navigate("/dashboard")
-        },
       })
+
+      if (response.data.user.role === "USER") {
+        navigate("/dashboard")
+      }
     } catch (error) {
       const errorMessage =
         error.response?.data?.message ||

@@ -30,9 +30,13 @@ export default function LadingPage() {
         </div>
 
         {/* Desktop Navigation */}
-        <nav className="flex items-center gap-4" role="navigation" aria-label="Navegação principal">
+        <nav
+          className="flex items-center gap-4"
+          role="navigation"
+          aria-label="Navegação principal"
+        >
           <Link
-            to="/login"
+            to="/signin"
             className="flex items-center gap-2 bg-white border border-blue-200 text-blue-600 px-4 sm:px-6 py-2 sm:py-3 rounded-xl hover:bg-blue-50 hover:border-blue-300 transition-all duration-300 text-sm sm:text-base group"
           >
             <LogIn
@@ -49,17 +53,26 @@ export default function LadingPage() {
           <span className="bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-sm font-medium mb-6 inline-block animate-fade-in-up">
             ✨ Revolucione sua gestão de tempo
           </span>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-6 leading-tight animate-fade-in-up" style={{ animationDelay: '200ms' }}>
+          <h2
+            className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-6 leading-tight animate-fade-in-up"
+            style={{ animationDelay: "200ms" }}
+          >
             Simplifique o controle do seu tempo e{" "}
             <span className="bg-gradient-to-r from-blue-600 to-blue-800 text-transparent bg-clip-text">
               maximize seus resultados
             </span>
           </h2>
-          <p className="text-lg sm:text-xl text-gray-600 mb-8 sm:mb-12 leading-relaxed animate-fade-in-up px-4 sm:px-0" style={{ animationDelay: '400ms' }}>
+          <p
+            className="text-lg sm:text-xl text-gray-600 mb-8 sm:mb-12 leading-relaxed animate-fade-in-up px-4 sm:px-0"
+            style={{ animationDelay: "400ms" }}
+          >
             Uma plataforma completa e intuitiva para gerenciar seus horários,
             aumentar sua produtividade e alcançar o sucesso profissional
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 animate-fade-in-up" style={{ animationDelay: '600ms' }}>
+          <div
+            className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 animate-fade-in-up"
+            style={{ animationDelay: "600ms" }}
+          >
             <Link
               to="/register"
               className="group bg-gradient-to-r from-blue-600 to-blue-500 text-white text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 rounded-xl hover:translate-y-[-2px] transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-blue-200 font-medium relative overflow-hidden w-full sm:w-auto text-center focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
@@ -74,7 +87,12 @@ export default function LadingPage() {
               aria-label="Ver demonstração do produto"
             >
               <span>Ver demonstração</span>
-              <span className="group-hover:translate-x-1 transition-transform duration-300" aria-hidden="true">→</span>
+              <span
+                className="group-hover:translate-x-1 transition-transform duration-300"
+                aria-hidden="true"
+              >
+                →
+              </span>
             </Link>
           </div>
         </div>
